@@ -1,3 +1,5 @@
+<!-- Cart layout taken from AllPHPTricks by Javed Ur Rehman https://www.allphptricks.com/simple-shopping-cart-using-php-and-mysql/-->
+<!-- CSS, naigation layout taken from Mohamed Hasan https://github.com/priyesh18/book-store-->
 <?php
 session_start();
 
@@ -5,8 +7,11 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login1.php");
     exit;
 }
+
+//Include the functions page that has the functions total_items(), get_cats(), getbooks(), and getbycat() required for this login.
 include("function/functions.php");
-include("config.php");
+//Includes the database connection so that data can be written or selected from table in the database.
+require_once("includes/config.php");
 ?>
 
 <!doctype html>
@@ -51,10 +56,11 @@ include("config.php");
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li ><a href="index.php">Home</a></li>
+                    <li><a href="successpay.php">Order Status</a></li>
                     <?php 
                     
                     
-                   
+                   //To check if a person is logged in and that will determine if login is displayed on nav bar or if logout is displayed.
                     if(!isset($_SESSION['email'])){
                         echo "<li><a href='login1.php'>Login</a></li>";
                     }
@@ -62,11 +68,13 @@ include("config.php");
                     {
                         echo "<li><a href='logout.php'>Logout</a></li>";
                     }
+                    //If a person is logged in the email address will be displayed with welcome + the email address. 
                      if(isset($_SESSION['email'])){
                         $sess=$_SESSION['email'];
-                        echo "<li><a>Hi ".$_SESSION['email']."  ".$_SESSION['cust_id']."!</a></li>";
+                        echo "<li><a>Welcome ".$_SESSION['email']."  ".$_SESSION['cust_id']."!</a></li>";
                         
                     }
+                    //If they are not logged in then it will just display guest.
                     else {
                         echo "<li><a>Guest</a></li>";
                     }
@@ -75,33 +83,21 @@ include("config.php");
                     <li class="active"><a href="cart.php">my Cart<span class="badge"><?php total_items(); ?></span></a></li>
                     
                 </ul>
-                <form action="results.php" method="get" class="navbar-form navbar-right">
-                    <div class="form-group label-floating">
-                        <label class="control-label">Search Books</label>
-                        <input type="text" name="user_query" class="form-control">
-                    </div>
-                    <button type="submit" name="search" class="btn btn-round btn-just-icon btn-primary"><i class="material-icons">search</i><div class="ripple-container"></div></button>
-                </form>
-
-
             </div>
-
         </div>
     </nav>
 
     <!-- end navbar -->
-
+    <!-- This will display the items that are in the cart using the mycart() function. Including the name of the item, the quantity, the price, 
+            and a place to remove the item. -->
     <div class="container">
         <table class="table-striped table">
             <thead class="thead-inverse">
                 <tr>
-                    <th>#</th>
                     <th>Remove</th>
-                    <th colspan="2">Product </th>
-
-                    
+                    <th></th>
+                    <th>Item Name </th>
                     <th>Quantity</th>
-                    
                     <th>Price</th>
                 </tr>
             </thead>
@@ -110,13 +106,9 @@ include("config.php");
                 <?php mycart(); ?>
 
          
-        
+        <!-- This will display a button that when clicked will remove the selected item by using the PHP process below. -->
         <div align="right">
-            <!--<button class="btn"><input type="submit" value="Update" name="update_cart"/></button>-->
-            <button name="update_cart" type="submit" class="btn btn-danger">Update</button>
-           <!--<input type="submit" name="update_cart" value="update">-->
-           
-
+            <button name="update_cart" type="submit" class="btn btn-danger">Remove</button>   
         </div>
                 </form>
    </tbody>
@@ -125,13 +117,17 @@ include("config.php");
       
     </div>
     <?php
+    //Set session id cust_id to variable $id.
     $id = $_SESSION['cust_id'];
-   // $ip = getIpAdd();
+    //Once update_cart is posted
     if(isset($_POST['update_cart']))
    {
+       //Once remove button is clicked the book will be removed from the list.
        foreach($_POST['remove'] as $remove_id){
            $delete_books = "delete from cart where bookid = '$remove_id' AND cust_id = '$id'";
-          $run_delete = mysqli_query($conn, $delete_books);
+           //To run the query to delete the book.
+          $run_delete = mysqli_query($con, $delete_books);
+              //When the query is run the page will update with the removed book gone.
               if($run_delete){
                    echo "<script>window.open('cart.php','_self');</script>";
            }

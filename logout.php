@@ -1,8 +1,4 @@
 <?php
-//session_start();
-//session_destroy();
-//echo "<script>window.open('index.php','_self')</script>";
-
 // Initialize the session
 session_start();
  

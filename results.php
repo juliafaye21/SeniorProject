@@ -49,10 +49,9 @@ include("function/functions.php");
 
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="index.php">Home</a></li>
+                    <li><a href="index.php">Home</a></li>
+                    <li><a href="successpay.php">Order Status</a></li>
                     <?php 
-                    
-                    
                    
                     if(!isset($_SESSION['email'])){
                         echo "<li><a href='login1.php'>Login</a></li>";
@@ -74,15 +73,6 @@ include("function/functions.php");
                     <li><a href="cart.php">Go to Cart<span class="badge"><?php total_items(); ?></span></a></li>
                     
                 </ul>
-                <form action="results.php" method="get" class="navbar-form navbar-right">
-                    <div class="form-group label-floating">
-                        <label class="control-label">Search Books</label>
-                        <input type="text" name="user_query" class="form-control">
-                    </div>
-                    <button type="submit" name="search" class="btn btn-round btn-just-icon btn-primary"><i class="material-icons">search</i><div class="ripple-container"></div></button>
-                </form>
-
-
             </div>
 
         </div>
@@ -166,7 +156,7 @@ include("function/functions.php");
     $search_query=$_GET['user_query'];
    
     $result = "select * from Books where keywords like '%$search_query%' ";
-     $result=mysqli_query($conn, $result);
+     $result=mysqli_query($con, $result);
     while($row=mysqli_fetch_array($result))
 	{
 		echo "<div class='col-lg-4 col-md-6'>

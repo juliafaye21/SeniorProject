@@ -1,6 +1,6 @@
 <?php
 include("function/functions.php");
-require_once("config.php");
+require_once("includes/config.php");
 
 
 $email = trim($_POST["loginemail"]);
@@ -9,7 +9,7 @@ $password = trim($_POST["loginPassword"]);
 // Prepare a select statement
 $sql = "SELECT cust_id, email, password FROM customer WHERE email= ?";
 
-if($stmt = mysqli_prepare($conn, $sql)){
+if($stmt = mysqli_prepare($con, $sql)){
     // Bind variables to the prepared statement as parameters
     mysqli_stmt_bind_param($stmt, "s", $param_email);
     
@@ -43,8 +43,6 @@ if($stmt = mysqli_prepare($conn, $sql)){
         echo "Oops! Something went wrong. Please try again later.";
     }
 
-    // Close statement
-    //mysqli_stmt_close($stmt);
 }
 
 

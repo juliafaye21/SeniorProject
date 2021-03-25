@@ -1,3 +1,5 @@
+<!-- Navigation taken from Mohamed Hasan https://github.com/priyesh18/book-store-->
+<!-- Payment format and CSS taken from w3schools https://www.w3schools.com/howto/howto_css_checkout_form.asp-->
 <?php
 session_start();
 
@@ -5,9 +7,11 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login1.php");
     exit;
 }
+//PHP section on this page is used for server side validation. landing/js/payment.js is used for client side user input validation.
 include("function/functions.php");
-include("config.php");
+require_once("includes/config.php");
 
+//Empty variables used to assign values later in the php code the values the user inputs into the form.
 $id = $_SESSION["cust_id"];
 $address = "";
 $address_err = "";
@@ -27,173 +31,186 @@ $expyear = "";
 $expyear_err = "";
 $cvv = "";
 $cvv_err = "";
+$book_id = "";
+$ip_add = "";
+$cust_id = "";
+$order_status = "";
 
 $errors[] = '';
 if(isset($_POST['submit']))
 {
-            $regAddress = $_POST['address'];
-           if(empty($_POST['address'])){
-               //array_push($errors, "Address is Required");
-               $address_err = "Address is Required";
-            }
-            elseif(!preg_match("/^[a-zA-Z0-9-' .\-]+$/i",$regAddress)){
-                $address_err = "error";
-                echo "<script>alert('address')</script>";
-               }
-            else{
-                $address = $_POST['address'];
-               // echo '<script>alert("'.$address.'")</script>';
-            }
-
-            $regCity = $_POST['city'];
-            if(empty($_POST['city'])){
-                //array_push($errors, "City is Required");
-                $city_err = "City is required";
-            }
-            elseif(!preg_match("/^[a-zA-Z-' ]*$/",$regCity)){
-                $city_err = "error";
-                echo "<script>alert('city')</script>";
-               }
-            else{
-                $city = $_POST['city'];
-            }
-
-           $regState = $_POST['state'];
-           if(empty($_POST['state'])){
-               // array_push($errors, "State is Required");
-               $state_err = "State is required";
-            }
-            elseif(!preg_match("/^[a-zA-Z-' ]*$/",$regState)){
-                $state_err = "error";
-                echo "<script>alert('state')</script>";
-               }
-            else{
-                $state = $_POST['state'];
-            }
-
-            $regZip = $_POST['zip'];
-            if(empty($_POST['zip'])){
-               //array_push($errors, "Zip is Required");
-               $zip_err = "Zip is required";
-            }
-            elseif(!preg_match("/^[0-9]{5}(-[0-9]{4})?$/",$regZip)){
-                $zip_err = "error";
-                echo "<script>alert('zip')</script>";
-               }
-            else{
-                $zip = $_POST['zip'];
-            }
-
-            $regCardName = $_POST['cardname'];
-            if(empty($_POST['cardname'])){
-                //array_push($errors, "Name on card is Required");
-                $cardname_err = "Name for card is required";
-           }
-           elseif(!preg_match("/^[a-zA-Z-' ]*$/",$regCardName)){
-                $cardname_err = "error";
-            echo "<script>alert('cardName')</script>";
-           }
-           else{
-                $cardname = $_POST['cardname'];
-           }
-
-           $regCardNumber = $_POST['cardnumber'];
-           if(empty($_POST['cardnumber'])){
-               //array_push($errors, "Card number is Required");
-               $cardnumber_err = "Card number is Required";
-           }
-           elseif(!preg_match("/^[0-9]{16}$/",$regCardNumber)){
-                $cardnumber_err = "error";
-            echo "<script>alert('cardNumber')</script>";
-           }
-           else{
-                $cardnumber = $_POST['cardnumber'];
-           }
-
-           $regExpMonth = $expmonth = $_POST['expmonth'];
-            if(empty($_POST['expmonth'])){
-               // array_push($errors, "Expiration month is required Required");
-                $expmonth_err = "Experation Month is required";
-            }
-            elseif(!preg_match("/^([1-9]|1[012])$/",$regExpMonth)){
-                $expmonth_err = "error";
-                echo "<script>alert('expmonth')</script>";
-               }
-            else
-            {
-                $expmonth = $_POST['expmonth'];
-            }
-
-            $regExpyear =  $_POST['expyear'];
-            if(empty($_POST['expyear'])){
-               // array_push($errors, "Expiration year is Required");
-               $expyear_err = "Experation year required";
-            }
-            elseif(!preg_match("/^[0-9]{2}$/",$regExpyear)){
-                $expyear_err = "error";
-                echo "<script>alert('expyear')</script>";
-               }
-            else{
-                $expyear = $_POST['expyear'];
-            }
-
-            $regCvv = $cvv = $_POST['cvv'];
-            if(empty($_POST['cvv'])){
-               //array_push($errors, "CVV is Required");
-               $cvv_err = "CVV required";
-            }
-            elseif(!preg_match("/^[0-9]{3}$/",$regCvv)){
-                $cvv_err = "error";
-                echo "<script>alert('cvv')</script>";
-               }
-            else{
-                $cvv = $_POST['cvv'];
-            }
-
-
-            if(empty($address_err) && empty($city_err) && empty($state_err) && empty($zip_err) && empty($cardname_err) && empty($cardnumber_err) && empty($expmonth_err) && empty($expyear_err) && empty($cvv_err)){
-                
-                //$param_ecard = password_hash($cardnumber, PASSWORD_DEFAULT);
-                //$ecardnumber = md5($cardnumber);
-                $query = "INSERT INTO Payments (`cust_id`, `cname`, `cardnum`, `expmonth`, `expyear`, `cvv`, `baddress`, `astate`, `zip`, `city`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-                if($stmt = mysqli_prepare($conn, $query)){
-                    mysqli_stmt_bind_param($stmt,"ssssssssss",$param_id,$param_cname,$param_ecard,$param_expmonth,$param_expyear,$param_cvv,$param_address,$param_state,$param_zip,$param_city);
-                   // echo '<script>alert("'.$address.'")</script>';
-                    $param_id = intval($id);
-                    $param_cname = $cardname;
-                    //$param_ecard = $cardnumber;
-                    //$param_ecard = password_hash($cardnumber, PASSWORD_DEFAULT);
-                    $param_ecard = md5($cardnumber);
-                    $param_expmonth = intval($expmonth);
-                    $param_expyear = intval($expyear);
-                    $param_cvv = intval($cvv);
-                    $param_address = $address;
-                    $param_state = $state;
-                    $param_zip = intval($zip);
-                    $param_city = $city;
-                   // echo "<script>alert('got here')</script>";
-
-                if(mysqli_stmt_execute($stmt)){ 
-                //echo "1";
-                
-                   echo "<script>alert('You have successfully made a payment.')</script>";
-                   ///$id = $_SESSION["cust_id"];
-                    //$ip = getIpAdd();
-                   $delete_books = "DELETE FROM cart WHERE cust_id = '$id'";
-                   $run_delete = mysqli_query($conn, $delete_books);
-                 if($run_delete){
-                     echo "<script>window.open('index.php','_self');</script>";
-                   }
-            
-            } 
-           else {
-               echo "<script>alert('Errors found')</script>";
-            }
-        }
+    $regAddress = $_POST['address'];
+    //Checks to see if the address field is empty in the form. 
+    if(empty($_POST['address'])){
+        $address_err = "Address is required";
     }
+    /**Uses regular expressions to check that upper case, lower case letters, and period or dash can be used.
+     * This checks if the address meets a certain criteria lower case letters, upper case letters, and period or dash.
+     */
+    elseif(!preg_match("/^[a-zA-Z0-9' .\-]+$/i", $regAddress)){
+        $address_err = "error";
+    }
+    else{
+        //If above passes if statements then address the user inputted into the form is set to the $address variable.
+        $address = $_POST['address'];
+        $address_err = "";
+    }
+
+    $regCity = $_POST['city'];
+    //Check if city field is empty
+    if(empty($_POST['city'])){
+        $city_err = "City is required";
+    }
+    //Check if the city has lower case and upper case letter.
+    elseif(!preg_match("/^[a-zA-Z-' ]*$/", $regCity)){
+        $city_err = "error";
+    }
+    //Else assign the city value to $city variable
+    else{
+        //If variable passes the above two if checks then the value is assigned to a variable.
+        $city = $_POST['city'];
+        $city_err = "";
+    }
+
+    $regState = $_POST['state'];
+    //Check if the value is empty
+    if(empty($_POST['state'])){
+        $state_err = "State is requred";
+    }
+    //Use regular expression to see if the value has only upper and lower case letters.
+    elseif(!preg_match("/^[a-zA-Z-' ]*$/", $regState)){
+        $state_err = "error";
+    }
+    //If value passes the above two if checks then the value is assigned to a variable.
+    else{
+        $state = $_POST['state'];
+       $state_err = "";
+    }
+
+    $regZip = $_POST['zip'];
+    //Check if the value is empty.
+    if(empty($_POST['zip'])){
+        $zip_err = "Zip is requred";
+    }
+    //Use regular expression to see of the value has 5 numbers and optional 4 numbers.
+    elseif(!preg_match("/^[0-9{5}(-[0-9]{4}]?$/", $regZip)){
+        $zip = $_POST['zip'];
+        $zip_err = "";
+    }
+    //If value passes the above if checks then the value is assigned to a variable.
+    else{
+        $zip_err = "error";
+    }
+
+    $regCardName = $_POST['cardname'];
+    //Check if the value is empty.
+    if(empty($_POST['cardname'])){
+        $cardname_err = "Name for card is requred";
+    }
+    //Use upper case and lower case letters only.
+    elseif(!preg_match("/^[a-zA-Z-' ]*$/", $regCardName)){
+        $cardname_err = "error";
+    }
+    //If value passes the above two if checks then the value is assigned to a variable. 
+    else{
+        $cardname = $_POST['cardname'];
+        $cardname_err = "";
+    }
+
+    $regCardNumber = $_POST['cardnumber'];
+    //Checks if the value is empty.
+    if(empty($_POST['cardnumber'])){
+        $cardnumber_err = "Card number is requred";
+    }
+    //Set 16 numbers
+    elseif(!preg_match("/^[0-9]{16}$/", $regCardNumber)){
+        $cardnumber_err = "error";
+    }
+    //If value passes the above two if checks then the value is assigned to a variable.
+    else{
+        $cardnumber = $_POST['cardnumber'];
+        $cardnumber_err = "";
+    }
+
+    $regExpMonth = $_POST['expmonth'];
+    //Check if the value it empty.
+    if(empty($_POST['expmonth'])){
+        $expmonth_err = "Expiration month is requred";
+    }
+    //Only has numbers 1 through 12
+    elseif(!preg_match("/^([0-9]|01[012])$/", $regExpMonth)){
+        $expmonth_err = "error";
+    }
+    //If value passes the above two if checks then the value is assigned to a variable. 
+    else{
+        $expmonth = $_POST['expmonth'];
+        $expmonth_err = "";
+    }
+
+    $regExpyear = $_POST['expyear'];
+    //Check if the value is empty.
+    if(empty($_POST['expyear'])){
+        $expyear_err = "Expiration year is requred";
+    }
+    //Has only 2 numbers in length/
+    elseif(!preg_match("/^[0-9]{2}$/", $regExpyear)){
+        $expyear_err = "error";
+    }
+    //If value passes the above two if checks then the value is assigned to a variable.
+    else{
+        $expyear = $_POST['expyear'];
+        $expyear_err = "";
+    }
+
+    $regCvv = $cvv = $_POST['cvv'];
+    //Check if the value is empty.
+    if(empty($_POST['cvv'])){
+        $cvv_err = "CVV is requred";
+    }
+    //Only use 3 length in numbers.
+    elseif(!preg_match("/^[0-9]{3}$/", $regCvv)){
+        $cvv_err = "error";
+    }
+    //If value passes the above two if checks then the value is assigned a variable.
+    else{
+        $cvv = $_POST['cvv'];
+        $cvv_err = "";
+    }
+
+    //If any of the values are not empty then the below if statement will not execute.
+    if(empty($address_err) && empty($city_err) && empty($state_err) && empty($zip_err) && empty($cardname_err) && empty($cardnumber_err) && empty($expmonth_err) && empty($expyear_err) && empty($cvv_err)){
+        //Build query statement and set the query ti variable named $query
+        $query = "INSERT INTO `Payments`(`cust_id`, `cname`, `cardnum`, `expmonth`, `expyear`, `cvv`, `baddress`, `astate`, `zip`, `city`) VALUES (?,?,?,?,?,?,?,?,?,?)";
+        /**Prepares the MySQL query, and returns a statement handle to be used for further operations in the statement. 
+         * The query must consist of a single SQL statement.
+        */
+        if($stmt = mysqli_prepare($con,$query)){
+            //Bind variables for the parameter markers in the SQL statement that was passed to mysqli_prepare().
+            mysqli_stmt_bind_param($stmt,"ssssssssss", $param_id, $param_cname, $param_ecard, $param_expmonth, $param_expyear, $param_cvv, $param_address, $param_state, $param_zip, $param_city);
+            //Pass variable user assigned variables to variables used for mysqli_stmt_bind_param. 
+            $param_id = intval($id);
+            $param_cname = $cardname;
+            $param_ecard = md5($cardnumber);
+            $param_expmonth = intval($expmonth);
+            $param_expyear = intval($expyear);
+            $param_cvv = intval($cvv);
+            $param_address = $address;
+            $param_state = $state;
+            $param_zip = intval($zip);
+            $param_city = $city;
+            //Execute a prepared statement.
+            if(mysqli_stmt_execute($stmt)){
+              
+                history();
+            }
+         else{
+         
+            die( 'stmt error: '.mysqli_stmt_error($stmt) );
+         }   
+    }
+    }
+
 }
-
-
 ?> 
 <!doctype html>
 
@@ -219,18 +236,18 @@ if(isset($_POST['submit']))
     <link href="assets/css/pay.css" rel="stylesheet" />
 
     <!--Java Script-->
-    <script type="text/javascript" charset="utf8" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.js"></script>
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script type="text/javascript">
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js'></script>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"> </script> 
     <script src="landing/js/payment.js"></script>
-    </head>
+    
+</head>
 
 <body style="margin-top:150px">
 
-    <!-- Navbar will come here  -->
 
     <nav class="navbar navbar-fixed-top" role="navigation" id="topnav">
         <div class="container-fluid">
@@ -247,7 +264,8 @@ if(isset($_POST['submit']))
 
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="index.php">Home</a></li>
+                    <li><a href="index.php">Home</a></li>
+                    <li><a href="successpay.php">Order Status</a></li>
                     <?php 
                     
                     if(!isset($_SESSION['email'])){
@@ -270,15 +288,6 @@ if(isset($_POST['submit']))
                     <li><a href="cart.php">Go to Cart<span class="badge"><?php total_items(); ?></span></a></li>
                     
                 </ul>
-                <form action="results.php" method="get" class="navbar-form navbar-right">
-                    <div class="form-group label-floating">
-                        <label class="control-label">Search Books</label>
-                        <input type="text" name="user_query" class="form-control">
-                    </div>
-                    <button type="submit" name="search" class="btn btn-round btn-just-icon btn-primary"><i class="material-icons">search</i><div class="ripple-container"></div></button>
-                </form>
-
-
             </div>
 
         </div>
@@ -287,9 +296,8 @@ if(isset($_POST['submit']))
             <div class="row">
                 <div class="col-75">
                     <div class="container">
-                       
                         <form method="post" action="payment.php">
-                      
+                        
                             <div class="row">
                                 <div class="col-50">
                                     <h3>Billing Address</h3>
@@ -340,7 +348,7 @@ if(isset($_POST['submit']))
 
                                     <div class="form-group">
                                     <label for="ccnum">Credit card number</label>
-                                    <input type="text" id="ccnum" name="cardnumber" class="cardnumber" placeholder="11112222333344">
+                                    <input type="text" id="ccnum" name="cardnumber" class="cardnumber" placeholder="1111222233334444">
                                     <span class="error"  style="display:none"></span>
                                     </div>
 
@@ -354,7 +362,7 @@ if(isset($_POST['submit']))
                                         <div class="col-50">
                                         <div class="form-group">
                                             <label for="expyear">Exp Year</label>
-                                           <input type="text" id="expyear" name="expyear" class="expyear" placeholder="18">
+                                           <input type="text" id="expyear" name="expyear" class="expyear" placeholder="21">
                                            <span class="error" style="display:none"></span>
                                             </div>
                                             </div>
@@ -369,10 +377,10 @@ if(isset($_POST['submit']))
                                 </div>
                             </div>
                             </div>
-                            <input type="submit" name="submit" id="submit" value="Continue to checkout" class="btn">
+                            <input type="submit" name = "submit" value="Continue to checkout" class="btn">
                         </form>
                     </div>
                 </div>
             </div>
-            
-    <!-- end navbar -->
+    </body>
+</html>

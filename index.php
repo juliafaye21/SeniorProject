@@ -1,3 +1,4 @@
+<!-- CSS and format was taken from Mohamed Hasan https://github.com/priyesh18/book-store and editted by Julia George. --> 
 <?php 
 session_start();
 // Check if the user is logged in, if not then redirect him to login page
@@ -5,8 +6,11 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
     header("location: login1.php");
     exit;
 }
+/**Inlclude the function page that has the functions total_items(), get_carts(), carts(), getbooks(), and getbycat() required
+ * for this page.
+ */
 include("function/functions.php");
-
+include("includes/config.php");
 
 ?>
 <!doctype html>
@@ -52,8 +56,8 @@ include("function/functions.php");
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav">
                     <li class="active"><a href="index.php">Home</a></li>
+                    <li><a href="successpay.php">Order Status</a></li>
                     <?php 
-                    
                     
                    
                     if(!isset($_SESSION['email'])){
@@ -66,7 +70,6 @@ include("function/functions.php");
                      if(isset($_SESSION['email'])){
                         $sess=$_SESSION['email'];
                         echo "<li><a>Hi ".$_SESSION['email']." !</a></li>";
-                        
                     }
                     else {
                         echo "<li><a>Guest</a></li>";
@@ -76,17 +79,7 @@ include("function/functions.php");
                     <li><a href="cart.php">Go to Cart<span class="badge"><?php total_items(); ?></span></a></li>
 
                 </ul>
-                <form action="results.php" method="get" class="navbar-form navbar-right">
-                    <div class="form-group label-floating">
-                        <label class="control-label">Search Books</label>
-                        <input type="text" name="user_query" class="form-control">
-                    </div>
-                    <button type="submit" name="search" class="btn btn-round btn-just-icon btn-primary"><i class="material-icons">search</i><div class="ripple-container"></div></button>
-                </form>
-
-
             </div>
-
         </div>
     </nav>
 
@@ -101,16 +94,18 @@ include("function/functions.php");
                     <div class="carousel-inner">
                         <div class="item active">
                             <div class="col-xs-4" id="bk1">
+                                <!-- jpg images, titles, and ook description declared below. -->
                                 <img src="./assets/images/twilight.jpg">
                                 <div class="c-content "><b>Twilight</b><br> by Stephanie Meyer<br><br>
-                                    <p>High school student Bella Swan moves from sunny Arizona to rainy Washington.</br>
-                                    She meets Edward Cullen, a handsome but mysterious teen whose eyes seem to peer directly into her soul. Edward is a vampire and bella enters into a dangerous roamnce with this immortal soulmate.
+                                    <p>High school student Bella Swan moves from Arizona to Washington.</br>
+                                    She meets a handsome but mysterious teen whose eyes seem to peer directly into her soul. Edward is a vampire and bella enters into a dangerous roamnce.
                                 </div>
 
                             </div>
                         </div>
                         <div class="item">
                             <div class="col-xs-4" id="bk2">
+                                <!-- jpg images, titles, and ook description declared below. -->
                                 <img src="./assets/images/fiftyshades.jpg">
                                 <div class="c-content "><b>Fifty Shades of Grey</b><br> by E L James<br><br> When literature student Anastasia Steele goes to interview young entrepreneur Christian Grey, she encounters a man who is beautiful, brilliant, and intimidating.
                                 </div>
@@ -119,6 +114,7 @@ include("function/functions.php");
                         </div>
                         <div class="item">
                             <div class="col-xs-4" id="bk3">
+                                <!-- jpg images, titles, and ook description declared below. -->
                                 <img src="assets/images/it.jpg">
                                 <div class="c-content "><b>IT</b><br> by Stephen King<br><br>7 children and one evil entity. <br> Following the experinces of these children as they are terrorized by their fears.
                                 </div>
@@ -127,6 +123,7 @@ include("function/functions.php");
                         </div>
                         <div class="item">
                             <div class="col-xs-4" id="bk4">
+                                <!-- jpg images, titles, and ook description declared below. -->
                                 <img src="assets/images/dinosaursbeforedark.jpg">
                                 <div class="c-content "><b>Magic Tree House: Dinosaurs Before Dark</b><br> by Mary Pope Osborne<br><br> Two children and a treehouse.<br>An adventure of a lifetime. 
                                 </div>
@@ -136,6 +133,7 @@ include("function/functions.php");
 
 
                     </div>
+                    <!-- This controls the left and right sliding console affect on the end of the images displayed. -->
                     <a class="left carousel-control" href="#theCarousel" data-slide="prev"><i class="fa fa-chevron-circle-left" aria-hidden="true"></i></a>
                     <a class="right carousel-control" href="#theCarousel" data-slide="next"></a>
                 </div>
@@ -152,6 +150,7 @@ include("function/functions.php");
             <div class="col-lg-2 col-md-2" id="myScrollspy">
                 <ul data-offset-top="225" data-spy="affix" class="nav nav-pills  nav-stacked">
                     <li role="presentation"><a href="index.php">All books</a></li>
+                    <!-- Calls the getcats() function that searches through the name of category by name from category table. -->
                     <?php getcats();?>
 
                 </ul>
@@ -161,10 +160,13 @@ include("function/functions.php");
 
 
                 <div class="container-fluid">
+                    <!-- This addes orders to the cart table -->
                     <?php cart(); ?>
                     <!-- Adding books -->
                     <div class="row">
+                        <!-- Gets books from the books table. -->
                         <?php getbooks();?>
+                        <!-- Gets books by category from books table.--> 
                         <?php get_bycat();?>
 
 
