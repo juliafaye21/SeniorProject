@@ -28,6 +28,12 @@
     border: 1px solid lightgrey;
     border-radius: 3px;
 }
+.container2 {
+    background-color: #f2f2f2;
+    padding: 60px 20px 15px 20px;
+    border: 1px solid lightgrey;
+    border-radius: 3px;
+}
 input[type=text]{
     width: 100%;
     margin-bottom: 20px;
@@ -63,5 +69,39 @@ label {
 span.price{
     float: right;
     color: grey;
+}
+table.payment{
+    padding: 10px;
+    width: 98%;
+    background-color: white;
+}
+tr.payment{
+    border-color: black;
+}
+td.payment{
+    border: 1px solid black;
+    padding: 10px;
+    width: 100px;
+}
+th.payment{
+    border: 1px solid black;
+}
+caption.payment{
+    border: 1px solid black;
+    background-color: darkblue;
+    color: orange;
+    text-align: center;
+}
+.right{
+    border-left: 1px solid black;
+    float: right;
+    width: 50%;
+    padding: 10px;
+}
+.left{
+    border-right: 1px solid black;
+    float: left;
+    width: 50%;
+    padding: 10px;
 }
 
