@@ -7,12 +7,12 @@ $c_email2 = "";
 $c_name = trim($_POST['name']); 
 $c_email = $_POST['email'];
 
-//Get phone value and check if it is empty and if it is set to null else set value to form value user inputs for phone.
-if(empty(trim($_POST['phone']))){
- $c_phone = NULL;
-}else{
-    $c_phone = trim($_POST['phone']);
-}
+//Get phone value and check if it is empty and if it is set to null else set value to form value user inputs for phone. Not used currently. 
+//if(empty(trim($_POST['phone']))){
+ //$c_phone = NULL;
+//}else{
+    //$c_phone = trim($_POST['phone']);
+//}
 
 //Set password variable to password user sets.
 $c_pass = trim($_POST['password']);
