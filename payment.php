@@ -147,19 +147,25 @@ if(isset($_POST['submit']))
         $expmonth_err = "";
     }
 
-    $regExpyear = $_POST['expyear'];
-    //Check if the value is empty.
+    //set getYear to string and get last 2 number in string
+    $getYear = date("y");
+
+    //check if the value is empty
     if(empty($_POST['expyear'])){
-        $expyear_err = "Expiration year is requred";
+        //$expyear_err = "Experation year required";
+    }   
+        //Has only 2 numbers in length
+    elseif(!preg_match("/^[0-9]{2}$/",$regExpyear)){
+    $expyear_err = "error";
     }
-    //Has only 2 numbers in length/
-    elseif(!preg_match("/^[0-9]{2}$/", $regExpyear)){
-        $expyear_err = "error";
+    elseif($regExpyear <= $getYear){
+    $expyear_err = "error";
+        //echo "<script>alert('". $getYear ."')</script>";
     }
-    //If value passes the above two if checks then the value is assigned to a variable.
     else{
+        //if value passes the above to if checks then the value is assigned to a variable
         $expyear = $_POST['expyear'];
-        $expyear_err = "";
+        //echo "<script>alert('get year ". $getYear ."')</script>";
     }
 
     $regCvv = $cvv = $_POST['cvv'];
