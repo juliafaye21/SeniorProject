@@ -28,7 +28,7 @@ $(document).ready(function () {
         //On input that has class address perform these if statements on it.
         if ($(this).hasClass('address')) {
             //Set variable addressChk to regular expressions that needs used to test user input against.
-            var addressChk = /^[a-zA-Z0-9-' .\-]+$/i;
+            var addressChk = /^[a-zA-Z0-9-' .\-]{10,100}+$/i;
             //Check if the length value is equal to zero if so then show error and add class hasError to the span html tag.
             if ($(this).val().length === 0) {
                 $(this).siblings('span.error').text('Please type an address').fadeIn().parent('.form-group').addClass('hasError');
@@ -108,7 +108,7 @@ $(document).ready(function () {
         //On input that has class cardname perform these if statements on it.
         if ($(this).hasClass('cardname')) {
             //Set variable cardChk to regular expression that needs used to test user input against.
-            var cardchk = /^[a-zA-Z-' ]*$/;
+            var cardchk = /^[a-zA-Z-' ]{10,50}*$/;
             //Check if the length value is equal to zero if so then show error and add class hasError to the span html tag.
             if ($(this).val().length === 0) {
                 $(this).siblings('span.error').text('Please enter name as seen on Card').fadeIn().parent('.form-group').addClass('hasError');
